@@ -5,14 +5,14 @@ const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
 const createUser = async (req, res) => {
-    const {username, password} = req.body
+    const {username, password, role} = req.body
     if(!username || !password){
         res.status(401).send('Username and password required!')
     }
     try{
         const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt)
-    const newUser = await new User({username, password: hashedPassword})
+    const newUser = await new User({username, password: hashedPassword, role})
     const user = await newUser.save()
     res.status(201).send('User created')
     }

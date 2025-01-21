@@ -10,4 +10,21 @@ const getUser = async (req, res) =>{
     res.json({user})
 }
 
-module.exports = {getAllUsers, getUser}
+const deleteUser = async (req, res) => {
+    try{
+        const user = await User.findById(req.params.userId)
+        if(!user){
+            return res.status(404).json({success: false, message: 'User not found'})
+        }
+        if(req.user.id === req.params.userId){
+            return res.status(403).json({success: false, message: 'Cannot delete your own admin account'})
+        }
+        await User.findByIdAndDelete(req.params.userId)
+        res.status(200).json({success: true, message: 'User successfully deleted'})
+    }catch(error){
+        console.error(error.message)
+        res.status(500).json({success: false, message: 'Server error'})
+    }
+}
+
+module.exports = {getAllUsers, getUser, deleteUser}
