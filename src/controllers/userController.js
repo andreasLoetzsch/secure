@@ -27,4 +27,23 @@ const deleteUser = async (req, res) => {
     }
 }
 
-module.exports = {getAllUsers, getUser, deleteUser}
+const updateUser = async (req, res) => {
+    const {username, email} = req.body
+    const user = await User.findById(req.params.userId)
+    if(!user){
+        res.status(404).send('User not found')
+    }
+    try{
+        if(username){
+            user.username = username
+        }
+        if(email){
+            user.email = email
+        }
+        res.status(200).json({success: true, message: 'User successfully updated'})
+    }catch(error){
+        res.status(500).send('Server Error')
+    }
+}
+
+module.exports = {getAllUsers, getUser, deleteUser, updateUser}
